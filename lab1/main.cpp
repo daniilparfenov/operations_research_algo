@@ -101,6 +101,12 @@ void solveGame(const std::string& filename) {
     model.lp_.a_matrix_.format_ = MatrixFormat::kColwise;
     model.lp_.a_matrix_.start_.clear();
 
+    // Reserve memory for the matrix
+    long long elCnt = (long long)m * n;
+    model.lp_.a_matrix_.index_.reserve(elCnt);
+    model.lp_.a_matrix_.value_.reserve(elCnt);
+    model.lp_.a_matrix_.start_.reserve(m + 1);
+
     // The start of 1st columnt is 0
     model.lp_.a_matrix_.start_.push_back(0);
     for (int i = 0; i < m; i++) {
@@ -119,6 +125,7 @@ void solveGame(const std::string& filename) {
     // Solve the problem
     Highs highs;
     highs.setOptionValue("output_flag", false);
+    highs.setOptionValue("solver", "ipm");
     highs.passModel(model);
     highs.run();
 
@@ -163,6 +170,10 @@ int main(int argc, char* argv[]) {
         std::cerr << "Usage: " << argv[0] << " <path_to_csv>" << std::endl;
         return 1;
     }
+
+    // Turn off sync with stdio
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
 
     std::string filename = argv[1];
     solveGame(filename);
