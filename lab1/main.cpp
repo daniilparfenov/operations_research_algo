@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -52,6 +54,28 @@ void printMatrix(const std::vector<std::vector<int>>& matrix) {
     }
 }
 
+int findLowerGameVal(const std::vector<std::vector<int>>& matrix) {
+    int lowerGameVal = std::numeric_limits<int>::min();
+
+    for (const auto& row : matrix) {
+        int minInARow = *std::min_element(row.begin(), row.end());
+        lowerGameVal = std::max(lowerGameVal, minInARow);
+    }
+
+    return lowerGameVal;
+}
+
+void solveGame(const std::string& filename) {
+    auto matrix = readCSV(filename);
+    if (matrix.empty()) {
+        std::cout << "Error: empty matrix is given" << std::endl;
+        return;
+    }
+
+    int shift = findLowerGameVal(matrix);
+    std::cout << "Lower Game Value: " << shift << std::endl;
+}
+
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cerr << "Usage: " << argv[0] << " <path_to_csv>" << std::endl;
@@ -59,9 +83,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::string filename = argv[1];
-
-    auto matrix = readCSV(filename);
-    printMatrix(matrix);
+    solveGame(filename);
 
     return 0;
 }
