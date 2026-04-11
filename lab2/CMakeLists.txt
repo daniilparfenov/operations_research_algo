@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(MatrixGameSolver)
+project(CliqueProblem)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -12,5 +12,5 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(highs)
 
-add_executable(matrix_solver main.cpp)
-target_link_libraries(matrix_solver PRIVATE highs)
+add_executable(clique_problem main.cpp)
+target_link_libraries(clique_problem PRIVATE highs)
