@@ -13,4 +13,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(highs)
 
 add_executable(clique_problem main.cpp)
+target_compile_options(clique_problem PRIVATE -O3 -march=native)
 target_link_libraries(clique_problem PRIVATE highs)
