@@ -333,6 +333,17 @@ void findMaxClique(const Graph& g) {
     for (int i = 0; i < g.V; ++i)
         C_start[i] = i;
 
+    // Counting degrees
+    std::vector<int> degrees(g.V, 0);
+    for (int i = 0; i < g.V; i++) {
+        for (int j = 0; j < g.V; j++) {
+            if (g.adj[i][j])
+                degrees[i]++;
+        }
+    }
+    // Sorting candidates in descending order of degree: it improves the greedy graph coloring algorithm
+    std::sort(C_start.begin(), C_start.end(), [&degrees](int a, int b) { return degrees[a] > degrees[b]; });
+
     // Solving the problem
     std::cout << "Starting Branch-and-Bound + Combinatorial Pruning..." << std::endl;
     solveBnB(g, highs, best_size, best_clique, Q_start, C_start);
