@@ -284,6 +284,20 @@ void solveBnB(const Graph& g, Highs& highs, int& best_size, std::vector<int>& be
     highs.changeColBounds(branch_var, 0.0, 1.0);
 }
 
+bool verifyClique(const Graph& g, const std::vector<int>& clique) {
+    for (size_t i = 0; i < clique.size(); ++i) {
+        for (size_t j = i + 1; j < clique.size(); ++j) {
+            int u = clique[i];
+            int v = clique[j];
+            if (!g.adj[u][v]) {
+                std::cerr << "[ERROR] Invalid clique! Vertices " << u + 1 << " and " << v + 1 << " are not connected!" << std::endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void findMaxClique(const Graph& g) {
     Highs highs;
     highs.setOptionValue("output_flag", false);
@@ -322,6 +336,15 @@ void findMaxClique(const Graph& g) {
     // Solving the problem
     std::cout << "Starting Branch-and-Bound + Combinatorial Pruning..." << std::endl;
     solveBnB(g, highs, best_size, best_clique, Q_start, C_start);
+
+    // Verify found clique
+    std::cout << "\nVerifying solution correctness..." << std::endl;
+    if (verifyClique(g, best_clique)) {
+        std::cout << "[OK] The found solution is a VALID clique." << std::endl;
+    } else {
+        std::cout << "[FAILED] The found solution is NOT a valid clique!" << std::endl;
+        return;
+    }
 
     // Printing max clique
     std::cout << "\n==================================\n";
